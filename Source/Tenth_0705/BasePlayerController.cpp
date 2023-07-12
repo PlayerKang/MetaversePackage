@@ -2,4 +2,9 @@
 
 
 #include "BasePlayerController.h"
+#include "Engine/Engine.h"
+#include "Engine/World.h"
 
+void ABasePlayerController::BeginPlay()
+{
+}

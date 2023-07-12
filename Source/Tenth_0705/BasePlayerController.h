@@ -13,5 +13,9 @@ UCLASS()
 class TENTH_0705_API ABasePlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	ABasePlayerController() { };
+	virtual void BeginPlay() override;
 	
 };
