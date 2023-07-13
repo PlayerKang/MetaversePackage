@@ -147,14 +147,14 @@ void AMetaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AP20230412Character::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMetaCharacter::Move);
 
 		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AP20230412Character::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMetaCharacter::Look);
 
 		//Voice Chat
-		EnhancedInputComponent->BindAction(VoiceAction, ETriggerEvent::Triggered, this, &AP20230412Character::VoiceStart);
-		EnhancedInputComponent->BindAction(VoiceAction, ETriggerEvent::Completed, this, &AP20230412Character::VoiceStop);
+		EnhancedInputComponent->BindAction(VoiceAction, ETriggerEvent::Triggered, this, &AMetaCharacter::VoiceStart);
+		EnhancedInputComponent->BindAction(VoiceAction, ETriggerEvent::Completed, this, &AMetaCharacter::VoiceStop);
 	}
 
 }
