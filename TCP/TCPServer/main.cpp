@@ -159,7 +159,7 @@ void Login_ReceiveFromDB(sql::Statement* _statement, sql::ResultSet*& _resultset
 
 }
 
-void ReceiveFromloginDB(sql::Statement* _statement, sql::ResultSet*& _resultset)
+void ReceiveFromLoginDB(sql::Statement* _statement, sql::ResultSet*& _resultset)
 {
 	// 쿼리문 세팅
 	string query = "SELECT * from member_list";
@@ -205,7 +205,7 @@ int main()
 	SOCKADDR_IN TCPServerSocketAddr;	//소켓 주소 구조체 만들기
 	memset(&TCPServerSocketAddr, NULL, sizeof(TCPServerSocketAddr));	//초기화
 	TCPServerSocketAddr.sin_family = AF_INET;				//IPv4
-	TCPServerSocketAddr.sin_port = htons(10000);			//port
+	TCPServerSocketAddr.sin_port = htons(8080);			//port
 	TCPServerSocketAddr.sin_addr.s_addr = INADDR_ANY;		//모두 수신
 
 	//socket 연결
@@ -433,16 +433,15 @@ int main()
 								char DediServerBuffer[1024] = { 0, };
 								int DediServerRecvBytes = recv(ReadSockets.fd_array[i], DediServerBuffer, sizeof(DediServerBuffer), 0);
 								DediServerBuffer[DediServerRecvBytes] = '\0';	//버퍼의 마지막에 null추가
-								MyData data;
-								memcpy(&data, DediServerBuffer, sizeof(MyData));
+								MyLoginData data;
+								memcpy(&data, DediServerBuffer, sizeof(MyLoginData));
 								cout << "----------DediServer----------" << endl;
-								cout << "PlayerNum : " << data.PlayerNum << endl;
-								cout << "ServerPort : " << data.ServerPort << endl;
-								cout << "IP : " << data.IP << endl;
+								cout << "Email : " << data.Email << endl;
+								cout << "Password : " << data.Password << endl;
 
 								//20230426 DB연결
 								cout << "----------DBInfo----------" << endl;
-								SendToDB(DB_Statement, data.IP, data.ServerPort, data.PlayerNum, 1);
+								SignUp_SendToDB(DB_Statement, data.Email, data.Password);
 							}
 							//20230426 받은 데이터 : 클라
 							else
@@ -450,90 +449,39 @@ int main()
 								cout << "----------ClientServer----------" << endl;
 
 								//1. db에서 포트번호랑 ip 받기
-								ReceiveFromDB(DB_Statement, DB_ResultSet);
-								DBInfoData DBData;
+								ReceiveFromLoginDB(DB_Statement, DB_ResultSet);
+								DBLoginData DBData;
 								memset(&DBData, 0, sizeof(DBData));
 								//20230502
-								DBDatas dbDatas[10];
+								DBLoginDatas dbDatas[10];
 								memset(&dbDatas, 0, sizeof(dbDatas));
 
 								int k = 0;
 								while (DB_ResultSet->next())
 								{
 									//20230502
-									strncpy(dbDatas[k].IP, DB_ResultSet->getString("ip_address").c_str(), sizeof(dbDatas[k].IP));
-									dbDatas[k].ServerPort = DB_ResultSet->getInt("port_number");
-									dbDatas[k].ServerPlayer = DB_ResultSet->getInt("player_number");
+									strncpy(dbDatas[k].Email, DB_ResultSet->getString("email").c_str(), sizeof(dbDatas[k].Email));
+									strncpy(dbDatas[k].Password, DB_ResultSet->getString("password").c_str(), sizeof(dbDatas[k].Password));
 									k++;
 								}
 								//cout 
 								for (int n = 0; n < 4; n++)
 								{
 									cout << "DB------------------------------" << endl;
-									cout << dbDatas[n].IP << endl;
-									cout << dbDatas[n].ServerPort << endl;
-									cout << dbDatas[n].ServerPlayer << endl;
+									cout << dbDatas[n].Email << endl;
+									cout << dbDatas[n].Password << endl;
 									cout << "--------------------------------" << endl;
 								}
 
-								//20230502
-								for (int j = 0; j < 10; j++)
-								{
-									//조건1. 서버가 맨처음 7777 이어야할것
-									//조건2. 7777서버가 풀일때 7778 서버로 들어가야할것
-									if (dbDatas[j].ServerPort == 7777)
-									{
-										if (dbDatas[j].ServerPlayer <= MAXPlayer)
-										{
-											strncpy(DBData.IP, dbDatas[j].IP, sizeof(DBData.IP));
-											cout << DBData.IP << endl;
-											DBData.ServerPort = dbDatas[j].ServerPort;
-											cout << DBData.ServerPort << endl;
-
-											//2. 받은 정보를 클라에 넘겨주기
-											char DBBuffer[1024] = { 0, };
-											//데이터 복사
-											memcpy(DBBuffer, &DBData, sizeof(DBInfoData));
-											int bytesSent = 0;
-											cout << "DB > Client" << endl;
-											//데이터 넘겨주기
-											send(ReadSockets.fd_array[i], DBBuffer, sizeof(DBData), bytesSent);
-											cout << "------------------------------------" << endl;
-											break;
-										}
-										else
-										{
-											cout << "1 else" << endl;
-										}
-									}
-									else if (dbDatas[j].ServerPort == 7778)
-									{
-										if (dbDatas[j].ServerPlayer <= MAXPlayer)
-										{
-											strncpy(DBData.IP, dbDatas[j].IP, sizeof(DBData.IP));
-											cout << DBData.IP << endl;
-											DBData.ServerPort = dbDatas[j].ServerPort;
-											cout << DBData.ServerPort << endl;
-
-											//2. 받은 정보를 클라에 넘겨주기
-											char DBBuffer[1024] = { 0, };
-											//데이터 복사
-											memcpy(DBBuffer, &DBData, sizeof(DBInfoData));
-
-											//--
-											int bytesSent = 0;
-											cout << "DB > Client" << endl;
-											//데이터 넘겨주기
-											send(ReadSockets.fd_array[i], DBBuffer, sizeof(DBData), bytesSent);
-											cout << "------------------------------------" << endl;
-											break;
-										}
-										else
-										{
-											cout << "2 else" << endl;
-										}
-									}
-								}
+								char DBBuffer[1024] = { 0, };
+								//데이터 복사
+								memcpy(DBBuffer, &DBData, sizeof(DBInfoData));
+								int bytesSent = 0;
+								cout << "DB > Client" << endl;
+								//데이터 넘겨주기
+								send(ReadSockets.fd_array[i], DBBuffer, sizeof(DBData), bytesSent);
+								cout << "------------------------------------" << endl;
+								break;
 
 							}
 						}

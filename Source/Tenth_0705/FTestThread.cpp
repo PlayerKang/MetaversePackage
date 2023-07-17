@@ -38,7 +38,7 @@ bool FTestThread::Init()
 	DediServerAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 
 	FString IP = TEXT("127.0.0.1");	//tcp ip
-	int32 port = 10000;	//tcp port
+	int32 port = 8080;	//tcp port
 	FIPv4Address TemporaryAddr;		//임시 저장소
 	FIPv4Address::Parse(IP, TemporaryAddr); //ip를 temporaryAddr에 변환해서 넣고
 	DediServerAddress->SetPort(port);	//port넣음

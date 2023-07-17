@@ -12,6 +12,15 @@
 #include "LoginWidget.generated.h"
 
 
+#pragma pack(push, 1)
+struct MyLoginData
+{
+    char Email[30];
+    char Password[30];
+};
+#pragma pack(pop)
+
+
 UCLASS()
 class TENTH_0705_API ULoginWidget : public UUserWidget
 {
@@ -42,6 +51,10 @@ public:
     UFUNCTION(BlueprintCallable)
         void OnBackButtonClicked();
 
+private:
+    FString Message;
+    TSharedPtr<FInternetAddr> DediServerAddress;
+    class FSocket* DediServerSocket;
 
 
     void NativeConstruct();
