@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "LoginGameMode.generated.h"
 
+
 UCLASS()
 class TENTH_0705_API ALoginGameMode : public AGameModeBase
 {

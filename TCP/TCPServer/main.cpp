@@ -426,7 +426,7 @@ int main()
 						else
 						{
 							int number;
-							memcpy(&number, Buffer, sizeof(int));
+							memcpy(&number, Buffer, sizeof(MyLoginData));
 							char DediServerBuffer[1024] = { 0, };
 							int DediServerRecvBytes = recv(ReadSockets.fd_array[i], DediServerBuffer, sizeof(DediServerBuffer), 0);
 							DediServerBuffer[DediServerRecvBytes] = '\0';	//버퍼의 마지막에 null추가

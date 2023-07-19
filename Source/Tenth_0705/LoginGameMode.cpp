@@ -13,6 +13,7 @@
 #include "SocketSubsystem.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "IPAddress.h"
+#include "FTestThread.h"
 
 ALoginGameMode::ALoginGameMode()
 {
@@ -41,6 +42,10 @@ ALoginGameMode::ALoginGameMode()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Just Do it again"));
 	}
+
+	// 스레드 생성
+	FTestThread* Sender = new FTestThread();
+	FRunnableThread* Thread = FRunnableThread::Create(Sender, TEXT("SendThread"));
 }
 
 void ALoginGameMode::StartPlay()
