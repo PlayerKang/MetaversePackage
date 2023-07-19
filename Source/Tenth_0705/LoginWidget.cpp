@@ -22,7 +22,6 @@ void ULoginWidget::OnLoginButtonClicked()
         FPassword = Password->GetText().ToString();
     }
 
-   
 
 
 
@@ -31,11 +30,11 @@ void ULoginWidget::OnLoginButtonClicked()
 
 void ULoginWidget::OnCreateSignUpButtonClicked()
 {
+    
 }
 
 void ULoginWidget::OnSignUpButtonClicked()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Send SignUp Daata"));
     if (Id && Id->HasKeyboardFocus())
     {
         FID = Id->GetText().ToString();
@@ -59,9 +58,8 @@ void ULoginWidget::OnSignUpButtonClicked()
     if (DediServerSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
     {
         DediServerSocket->Send(buffer, sizeof(MyLoginData), bytesSent);
-        
+        UE_LOG(LogTemp, Warning, TEXT("Send SignUp Data"));
     }
-    
 }
 
 void ULoginWidget::OnBackButtonClicked()
@@ -76,18 +74,16 @@ void ULoginWidget::NativeConstruct()
     if (LoginButton)
     {
         LoginButton->OnClicked.AddDynamic(this, &ULoginWidget::OnLoginButtonClicked);
-        UE_LOG(LogTemp, Warning, TEXT("Login Button Event"));
     }
     if (SignUpButton)
     {
         SignUpButton->OnClicked.AddDynamic(this, &ULoginWidget::OnCreateSignUpButtonClicked);
-        UE_LOG(LogTemp, Warning, TEXT("Move To SignUp Event"));
 
     }
 
-    UButton* CreateSignUpButton = Cast<UButton>(GetWidgetFromName(TEXT("CreateSignUpButton")));
+    UButton* CreateSignUpButton = Cast<UButton>(GetWidgetFromName(TEXT("createsignup")));
 
-    UButton* BackButton = Cast<UButton>(GetWidgetFromName(TEXT("BackButton")));
+    UButton* BackButton = Cast<UButton>(GetWidgetFromName(TEXT("back")));
     // 버튼 이벤트 핸들러 등록하기
     if (CreateSignUpButton)
     {

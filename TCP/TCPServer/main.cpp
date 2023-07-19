@@ -427,6 +427,22 @@ int main()
 						{
 							int number;
 							memcpy(&number, Buffer, sizeof(int));
+							char DediServerBuffer[1024] = { 0, };
+							int DediServerRecvBytes = recv(ReadSockets.fd_array[i], DediServerBuffer, sizeof(DediServerBuffer), 0);
+							DediServerBuffer[DediServerRecvBytes] = '\0';	//버퍼의 마지막에 null추가
+							MyLoginData data;
+							memcpy(&data, DediServerBuffer, sizeof(MyLoginData));
+							cout << "----------SignUpTest----------" << endl;
+							cout << "Email : " << data.Email << endl;
+							cout << "Password : " << data.Password << endl;
+
+							//20230426 DB연결
+							cout << "----------DBInfo----------" << endl;
+							SignUp_SendToDB(DB_Statement, data.Email, data.Password);
+
+							/*
+							int number;
+							memcpy(&number, Buffer, sizeof(int));
 							//20230426 받은 데이터 : 서버
 							if (number == 1)
 							{
@@ -468,8 +484,8 @@ int main()
 								for (int n = 0; n < 4; n++)
 								{
 									cout << "DB------------------------------" << endl;
-									cout << dbDatas[n].Email << endl;
-									cout << dbDatas[n].Password << endl;
+									cout << "Email : " << dbDatas[n].Email << endl;
+									cout << "Password : " << dbDatas[n].Password << endl;
 									cout << "--------------------------------" << endl;
 								}
 
@@ -482,8 +498,11 @@ int main()
 								send(ReadSockets.fd_array[i], DBBuffer, sizeof(DBData), bytesSent);
 								cout << "------------------------------------" << endl;
 								break;
-
 							}
+								*/
+
+
+							
 						}
 					}
 				}
