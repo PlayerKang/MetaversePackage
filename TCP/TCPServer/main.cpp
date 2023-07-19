@@ -58,24 +58,24 @@ struct DBDatas
 #pragma pack(push, 1)
 struct MyLoginData
 {
-	char Email[30];
-	char Password[30];
+	char Email[100];
+	char Password[100];
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct DBLoginData
 {
-	char Email[30];
-	char Password[30];
+	char Email[100];
+	char Password[100];
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct DBLoginDatas
 {
-	char Email[30];
-	char Password[30];
+	char Email[100];
+	char Password[100];
 };
 #pragma pack(pop)
 
@@ -410,7 +410,7 @@ int main()
 					else
 					{
 						char Buffer[1024] = { 0, };
-						int RecvBytes = recv(ReadSockets.fd_array[i], Buffer, sizeof(int), 0);
+						int RecvBytes = recv(ReadSockets.fd_array[i], Buffer, sizeof(MyLoginData), 0);
 						Buffer[RecvBytes] = '\0';	//버퍼의 마지막에 null추가
 						if (RecvBytes == 0)	//데이터를 수신하지 않음
 						{
@@ -432,7 +432,7 @@ int main()
 							DediServerBuffer[DediServerRecvBytes] = '\0';	//버퍼의 마지막에 null추가
 							MyLoginData data;
 							memcpy(&data, DediServerBuffer, sizeof(MyLoginData));
-							cout << "----------SignUpTest----------" << endl;
+							cout << "----------SignUpInput----------" << endl;
 							cout << "Email : " << data.Email << endl;
 							cout << "Password : " << data.Password << endl;
 

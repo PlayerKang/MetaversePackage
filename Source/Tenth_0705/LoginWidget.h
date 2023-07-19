@@ -15,8 +15,8 @@
 #pragma pack(push, 1)
 struct MyLoginData
 {
-    char Email[30];
-    char Password[30];
+    char Email[100];
+    char Password[100];
 };
 #pragma pack(pop)
 
