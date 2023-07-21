@@ -46,6 +46,7 @@ ALoginGameMode::ALoginGameMode()
 	// 스레드 생성
 	FTestThread* Sender = new FTestThread();
 	FRunnableThread* Thread = FRunnableThread::Create(Sender, TEXT("SendThread"));
+	UE_LOG(LogTemp, Warning, TEXT("Thread Create"));
 }
 
 void ALoginGameMode::StartPlay()

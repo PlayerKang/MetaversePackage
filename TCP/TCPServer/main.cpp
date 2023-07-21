@@ -58,6 +58,7 @@ struct DBDatas
 #pragma pack(push, 1)
 struct MyLoginData
 {
+	int type;
 	char Email[100];
 	char Password[100];
 };
@@ -138,24 +139,45 @@ void SignUp_SendToDB(sql::Statement* _statement, string Email, string Password)
 	catch (sql::SQLException err)
 	{
 		cout << "DB Send Error" << endl;
+		cout << "MySQL Error: " << err.what() << std::endl;
+		cout << "Error code: " << err.getErrorCode() << endl;
+		cout << "SQL state: " << err.getSQLState() << endl;
 		exit(-2);
 	}
 }
 
-void Login_ReceiveFromDB(sql::Statement* _statement, sql::ResultSet*& _resultset, string Email)
+bool Login_ReceiveFromDB(sql::Statement* _statement, sql::ResultSet*& _resultset, string Email, string Password)
 {
 	string ID = Email;
-	// 쿼리문 세팅
-	string query = "SELECT * from member_list WHERE email = '" + ID + "'";
-
+	string Pass = Password;
+	
+	string query = "SELECT password FROM member_list WHERE email = '" + ID + "'";
 	try {
-		// 실행하고 결과 받아오는게 있을 때 executeQuery 사용하자(결과값은 ResultSet* 타입이다)
+		
 		_resultset = _statement->executeQuery(query);
+		while (_resultset->next())
+		{
+			if (_resultset->getString("password") == Pass)
+			{
+				return false;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 	catch (sql::SQLException err)
 	{
 		cout << "DB Receive Error" << endl;
+		cout << "MySQL Error: " << err.what() << std::endl;
+		cout << "Error code: " << err.getErrorCode() << endl;
+		cout << "SQL state: " << err.getSQLState() << endl;
+
+		return false;
 	}
+	
+	
 
 }
 
@@ -432,13 +454,35 @@ int main()
 							DediServerBuffer[DediServerRecvBytes] = '\0';	//버퍼의 마지막에 null추가
 							MyLoginData data;
 							memcpy(&data, DediServerBuffer, sizeof(MyLoginData));
-							cout << "----------SignUpInput----------" << endl;
-							cout << "Email : " << data.Email << endl;
-							cout << "Password : " << data.Password << endl;
 
-							//20230426 DB연결
-							cout << "----------DBInfo----------" << endl;
-							SignUp_SendToDB(DB_Statement, data.Email, data.Password);
+							if (data.type == 0)
+							{
+								cout << "----------SignUpInput----------" << endl;
+								cout << "Email : " << data.Email << endl;
+								cout << "Password : " << data.Password << endl;
+
+								SignUp_SendToDB(DB_Statement, data.Email, data.Password);
+							}
+							else if (data.type == 1)
+							{
+								cout << "----------LoginInput----------" << endl;
+								cout << "Email : " << data.Email << endl;
+								cout << "Password : " << data.Password << endl;
+
+								bool IsCorrect = Login_ReceiveFromDB(DB_Statement, DB_ResultSet, data.Email, data.Password);
+								cout << "Is Correct Info? : " << IsCorrect << endl;
+
+								char LoginCheckBuffer[1024] = { 0, };
+
+								memcpy(LoginCheckBuffer, &IsCorrect, sizeof(bool));
+								int bytesSent = 0;
+								cout << "DB > Client" << endl;
+
+								send(ReadSockets.fd_array[i], LoginCheckBuffer, sizeof(IsCorrect), bytesSent);
+								cout << "------------------------------------" << endl;
+							}
+
+							
 
 							/*
 							int number;
