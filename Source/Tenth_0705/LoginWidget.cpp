@@ -109,7 +109,7 @@ void ULoginWidget::NativeConstruct()
 
     //TCP 연결 위젯에 때려박기
 
-    DediServerSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("DefaultSocket"), false);
+    /*DediServerSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("DefaultSocket"), false);
     DediServerAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 
     FString IP = TEXT("127.0.0.1");	//tcp ip
@@ -126,6 +126,6 @@ void ULoginWidget::NativeConstruct()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("TCP IN Failed"));
-    }
+    }*/
 
 }

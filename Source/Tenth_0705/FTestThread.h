@@ -17,20 +17,26 @@ class TENTH_0705_API FTestThread : public FRunnable
 public:
 	FTestThread();
 	FTestThread(const FString& m);
-	~FTestThread();
+	~FTestThread() override;
 
 	bool Init() override;
 	virtual uint32 Run() override;	//데이터를 보내는
 	virtual void Stop() override;	//스레드 중지
+	bool IsThreadRunning() const;
 
+	class FSocket* ServerSocket = nullptr;
+
+	FString RecvText = "";
 
 private:
 	FString Message;
-	TSharedPtr<FInternetAddr> DediServerAddress;
+	TSharedPtr<FInternetAddr> DediServerAddress = nullptr;
 	class FSocket* DediServerSocket;
-	class FRunnableThread* thread;
+	class FRunnableThread* thread = nullptr;
 
 	bool bRunThread = false;
 	bool bOneDediTCPInfo = false;
+
+	bool bIsThreadRunning = false;
 };
  

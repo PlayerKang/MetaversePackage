@@ -10,12 +10,12 @@
 
 FTestThread::FTestThread()
 {
-	
+	bIsThreadRunning = false;
 }
 
 FTestThread::FTestThread(const FString& m) : Message(m)
 {
-	
+	bIsThreadRunning = false;
 }
 
 FTestThread::~FTestThread()
@@ -23,6 +23,8 @@ FTestThread::~FTestThread()
 	//스레드 삭제
 	if (thread)
 	{
+		thread->WaitForCompletion();
+		thread->Kill();
 		UE_LOG(LogTemp, Warning, TEXT("Thread End"));
 		delete thread;
 	}
@@ -58,12 +60,35 @@ bool FTestThread::Init()
 
 uint32 FTestThread::Run()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Send Thread"));
+	bIsThreadRunning = true;
 
 	while (bRunThread)
 	{
 		//소켓과 연결이 끊어지면 종료
 		if (DediServerSocket->GetConnectionState() != ESocketConnectionState::SCS_Connected) break;
+
+		RecvText = "";
+
+		uint8_t RecvBuf[512];
+		int32 RecvByte = 0;
+
+		DediServerSocket->Recv(RecvBuf, 512, RecvByte);
+
+		char* RecvClientText = new char[512];
+		memset(RecvClientText, '\0', strlen(RecvClientText));
+
+		for (int i = 0; i < std::size(RecvBuf); ++i)
+		{
+			RecvClientText[i] = RecvBuf[i];
+		}
+
+		RecvText = RecvClientText;
+
+		GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, RecvText);
+
+		//delete[] RecvClientText;
+
+		FPlatformProcess::Sleep(0.1f);
 
 		////받아온 메세지를 uint8 데이터로 변환
 		//FString MessageToSend = FString::FromInt(UUSingleton::GetInstance()->GetData().PlayerNum);	//int > fstring변환
@@ -80,9 +105,9 @@ uint32 FTestThread::Run()
 		//	bRunThread = false;
 		//}
 
-		bOneDediTCPInfo = UUSingleton::GetInstance()->GetBool();
+		/*bOneDediTCPInfo = UUSingleton::GetInstance()->GetBool();*/
 
-		if (bOneDediTCPInfo)
+		/*if (bOneDediTCPInfo)
 		{
 			//20230424 받아온 메세지를 Mydata 구조체에 저장하고 구조체를 전송
 			MyData data;
@@ -108,14 +133,11 @@ uint32 FTestThread::Run()
 				bOneDediTCPInfo = false;
 			}
 
-			FPlatformProcess::Sleep(0.1f);	//스레드를 잠시 멈춘다
-			//정보를 보냈으니 스레드 종료
-			//if (!bRunThread)
-			//{
-			//	this->Stop();
-			//	break;
-			//}
-		}
+			FPlatformProcess::Sleep(0.1f);
+			
+		}*/
+
+
 	}
 
 	return 0;
@@ -125,6 +147,11 @@ void FTestThread::Stop()
 {
 	bRunThread = false;
 	
-	UE_LOG(LogTemp, Warning, TEXT("Thread End"));
+	/*UE_LOG(LogTemp, Warning, TEXT("Thread End"));*/
+}
+
+bool FTestThread::IsThreadRunning() const
+{
+	return bIsThreadRunning;
 }
 
