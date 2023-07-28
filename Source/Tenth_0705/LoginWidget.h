@@ -54,8 +54,8 @@ public:
 
 private:
     FString Message;
-    TSharedPtr<FInternetAddr> DediServerAddress;
-    class FSocket* DediServerSocket;
+    TSharedPtr<FInternetAddr> LoginServerAddress;
+    class FSocket* LoginServerSocket;
 
 
     void NativeConstruct();

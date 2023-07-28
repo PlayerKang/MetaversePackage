@@ -155,16 +155,21 @@ bool Login_ReceiveFromDB(sql::Statement* _statement, sql::ResultSet*& _resultset
 	try {
 		
 		_resultset = _statement->executeQuery(query);
-		while (_resultset->next())
+
+		if (_resultset->next())
 		{
 			if (_resultset->getString("password") == Pass)
 			{
-				return false;
+				return true;
 			}
 			else
 			{
 				return false;
 			}
+		}
+		else
+		{
+			return false;
 		}
 	}
 	catch (sql::SQLException err)
@@ -472,13 +477,13 @@ int main()
 								bool IsCorrect = Login_ReceiveFromDB(DB_Statement, DB_ResultSet, data.Email, data.Password);
 								cout << "Is Correct Info? : " << IsCorrect << endl;
 
-								char LoginCheckBuffer[1024] = { 0, };
+								char LoginCheckBuffer[512] = { 0, };
 
 								memcpy(LoginCheckBuffer, &IsCorrect, sizeof(bool));
 								int bytesSent = 0;
 								cout << "DB > Client" << endl;
 
-								send(ReadSockets.fd_array[i], LoginCheckBuffer, sizeof(IsCorrect), bytesSent);
+								send(ReadSockets.fd_array[i], LoginCheckBuffer, sizeof(LoginCheckBuffer), bytesSent);
 								cout << "------------------------------------" << endl;
 							}
 

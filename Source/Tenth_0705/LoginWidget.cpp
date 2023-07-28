@@ -32,9 +32,9 @@ void ULoginWidget::OnLoginButtonClicked()
     memcpy(buffer, &LoginData, sizeof(MyLoginData));
     //데이터 전송
     int32 bytesSent = 0;
-    if (DediServerSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
+    if (LoginServerSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
     {
-        DediServerSocket->Send(buffer, sizeof(MyLoginData), bytesSent);
+        LoginServerSocket->Send(buffer, sizeof(MyLoginData), bytesSent);
         UE_LOG(LogTemp, Warning, TEXT("Send Login Data"));
     }
 }
@@ -67,9 +67,9 @@ void ULoginWidget::OnSignUpButtonClicked()
     memcpy(buffer, &LoginData, sizeof(MyLoginData));
     //데이터 전송
     int32 bytesSent = 0;
-    if (DediServerSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
+    if (LoginServerSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
     {
-        DediServerSocket->Send(buffer, sizeof(MyLoginData), bytesSent);
+        LoginServerSocket->Send(buffer, sizeof(MyLoginData), bytesSent);
         UE_LOG(LogTemp, Warning, TEXT("Send SignUp Data"));
     }
 }
@@ -109,23 +109,23 @@ void ULoginWidget::NativeConstruct()
 
     //TCP 연결 위젯에 때려박기
 
-    /*DediServerSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("DefaultSocket"), false);
-    DediServerAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+    LoginServerSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("DefaultSocket"), false);
+    LoginServerAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 
     FString IP = TEXT("127.0.0.1");	//tcp ip
     int32 port = 8080;	//tcp port
     FIPv4Address TemporaryAddr;		//임시 저장소
     FIPv4Address::Parse(IP, TemporaryAddr); //ip를 temporaryAddr에 변환해서 넣고
-    DediServerAddress->SetPort(port);	//port넣음
-    DediServerAddress->SetIp(TemporaryAddr.Value);	//ip넣음
+    LoginServerAddress->SetPort(port);	//port넣음
+    LoginServerAddress->SetIp(TemporaryAddr.Value);	//ip넣음
 
-    if (DediServerSocket->Connect(*DediServerAddress))
+    if (LoginServerSocket->Connect(*LoginServerAddress))
     {
-        UE_LOG(LogTemp, Warning, TEXT("TCP IN Success"));
+        UE_LOG(LogTemp, Warning, TEXT("Widget TCP IN Success"));
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("TCP IN Failed"));
-    }*/
+        UE_LOG(LogTemp, Warning, TEXT("Widget TCP IN Failed"));
+    }
 
 }

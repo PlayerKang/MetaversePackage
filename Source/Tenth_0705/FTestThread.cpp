@@ -48,11 +48,11 @@ bool FTestThread::Init()
 
 	if (DediServerSocket->Connect(*DediServerAddress))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TCP IN Success"));
+		UE_LOG(LogTemp, Warning, TEXT("Thread TCP IN Success"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TCP IN Failed"));
+		UE_LOG(LogTemp, Warning, TEXT("Thread TCP IN Failed"));
 	}
 
 	return true;
